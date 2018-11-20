@@ -1,0 +1,15 @@
+{
+  "name": "shoplist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Mohammed Elamin",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^3.0.9",
+    "materialize-css": "^1.0.0-rc.2"
+  }
+}
