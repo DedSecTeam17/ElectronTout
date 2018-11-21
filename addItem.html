@@ -17,18 +17,43 @@
     <div class="col s12 m7">
         <div class="card">
             <div class="card-content">
-                <div class="input-field col s6">
-                    <input placeholder="Placeholder" name="item" id="item" type="text" class="validate" autofocus>
-                    <label for="first_name">Item</label>
-                </div>
-                <a class="waves-effect waves-light btn btn-block btn-large">Add New Item</a>
-            </div>
-            <div class="card-action">
-                <a href="#">This is a link</a>
+                <form>
+                    <div class="input-field col s6">
+                        <input placeholder="Placeholder" name="item" id="item" type="text" class="validate" autofocus>
+                        <label for="item">Item</label>
+                    </div>
+                    <button type="submit" class="waves-effect waves-light btn btn-block btn-large">Add New Item</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    const  electron=require('electron');
+    const {ipcRenderer}=electron;
+
+
+   const  form=document.querySelector('form')
+
+    form.addEventListener('submit',submitForm)
+
+    function submitForm(e) {
+       e.preventDefault();
+       const  item=document.querySelector('#item').value;
+
+       ipcRenderer.send('item:add',item)
+       console.log(item)
+       console.log('Hi here')
+
+    }
+
+
+
+
+
+
+</script>
 
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="js/materialize.js"></script>

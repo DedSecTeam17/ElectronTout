@@ -5,7 +5,7 @@ const url = require('url');
 const path = require('path');
 
 
-const {app, BrowserWindow, Menu} = electron;
+const {app, BrowserWindow, Menu, ipcMain} = electron;
 
 
 let mainWindow;
@@ -26,7 +26,7 @@ app.on('ready', function () {
 
 //     on close methods when main window close all sub windows should closed
 
-    mainWindow.on('close',function () {
+    mainWindow.on('close', function () {
         app.quit()
     })
 
@@ -37,20 +37,28 @@ app.on('ready', function () {
 
 });
 
+
+ipcMain.on('item:add', function (e, item) {
+    console.log('This is your Item now we will send it to index.html' + item)
+    mainWindow.webContents.send('item:add', item);
+    addItemWindow.close()
+
+});
+
 function addNewItemWindow() {
-    addItemWindow=new BrowserWindow({});
-    addItemWindow.setSize(300,200);
+    addItemWindow = new BrowserWindow({});
+    addItemWindow.setSize(300, 200);
     addItemWindow.setTitle('Add new Item');
 
     addItemWindow.loadURL(url.format({
-        pathname:path.join(__dirname,'addItem.html'),
-        protocol:'file:',
-        slashes:true
+        pathname: path.join(__dirname, 'addItem.html'),
+        protocol: 'file:',
+        slashes: true
     }))
 
 
-    addItemWindow.on('close',function () {
-        addItemWindow=null
+    addItemWindow.on('close', function () {
+        addItemWindow = null
     })
 
 }
@@ -66,7 +74,11 @@ let menuTemplate = [
                 }
             },
             {
-                label: 'Clear Item'
+                label: 'Clear Item',
+                click()
+                {
+                    mainWindow.webContents.send('item:clear');
+                }
             },
             {
                 label: 'Quit',
@@ -80,34 +92,30 @@ let menuTemplate = [
 ];
 
 
-
 // if we in mac
-if (process.platform==='darwin')
-{
+if (process.platform === 'darwin') {
     menuTemplate.shift({})
 
 }
 
 // add dev tools if we on development 
-if (process.env.NODE_ENV !=='production')
-{
+if (process.env.NODE_ENV !== 'production') {
     menuTemplate.push({
-        label:'Development',
-        submenu:[
+        label: 'Development',
+        submenu: [
             {
-                label:'Dev Tool',
-                accelerator:process.platform==='darwin' ? 'command+d' : 'ctrl+d',
-                click(item,focusedWindow)
-                {
+                label: 'Dev Tool',
+                accelerator: process.platform === 'darwin' ? 'command+d' : 'ctrl+d',
+                click(item, focusedWindow) {
                     focusedWindow.toggleDevTools();
 
                 }
             },
 
             {
-                label:'Refresh the page',
-                accelerator:process.platform==='darwin' ? 'command+r' : 'ctrl+r',
-              role:'reload'
+                label: 'Refresh the page',
+                accelerator: process.platform === 'darwin' ? 'command+r' : 'ctrl+r',
+                role: 'reload'
             }
         ]
     })
